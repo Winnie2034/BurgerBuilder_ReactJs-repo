@@ -1,25 +1,32 @@
 import React, { Component } from 'react';
 import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import { Route } from 'react-router-dom';
+import ContactData from './ContactData/ContactData';
 
 
 
 class Checkout extends Component {
 
     state = {
-        ingredients: {
-            salad: 1, meat: 1, cheese: 1, bacon: 1
-        }
+        ingredients: null,
+        totalPrice: 0
         //dummy ingredients, will pass the actual ones using routing
-    } 
-    componentDidMount() {
+    }
+    componentWillMount() {
         const query = new URLSearchParams(this.props.location.search);
         const ingredients = {};
+        let price = 0;
         for (let p of query.entries()) {
-            ingredients[p[0]] = +p[1];
+            if (p[0] === 'price') {
+                price = p[1];
+            } else {
+                ingredients[p[0]] = +p[1];
+            }
         }
         //adding a plus symbol before any numerical string will convert that string into actual number.
         this.setState({
-            ingredients: ingredients
+            ingredients: ingredients,
+            totalPrice: price
         })
     }
 
@@ -38,6 +45,12 @@ class Checkout extends Component {
                     ingredients={this.state.ingredients}
                     checkoutCancelled={this.checkoutCancelHandler}
                     checkoutContinued={this.checkoutContinueHandler} />
+                {/*<Route path={this.props.match.path + '/contact-data'} component={ContactData} />*/}
+                {/*here we are passing the component automatically but we can also pass it manually
+                in order to add some props to the component if we wish to. */}
+                <Route path={this.props.match.path + '/contact-data'}
+                    render={(props) => (<ContactData ingredients={this.state.ingredients} price={this.state.totalPrice} {...props} />)} />
+
             </div>
         );
     }
