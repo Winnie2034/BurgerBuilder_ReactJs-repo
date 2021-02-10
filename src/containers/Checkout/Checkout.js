@@ -12,13 +12,13 @@ class Checkout extends Component {
         totalPrice: 0
         //dummy ingredients, will pass the actual ones using routing
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const query = new URLSearchParams(this.props.location.search);
         const ingredients = {};
         let price = 0;
         for (let p of query.entries()) {
             if (p[0] === 'price') {
-                price = p[1];
+                price = +p[1];
             } else {
                 ingredients[p[0]] = +p[1];
             }
@@ -26,7 +26,7 @@ class Checkout extends Component {
         //adding a plus symbol before any numerical string will convert that string into actual number.
         this.setState({
             ingredients: ingredients,
-            totalPrice: price
+            totalPrice: price.toFixed(2),
         })
     }
 
